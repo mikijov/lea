@@ -6,7 +6,6 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(PkgConfig REQUIRED)
 include(ExternalProject)
 
 ExternalProject_Add(
@@ -24,7 +23,7 @@ add_library(lua STATIC IMPORTED)
 set_property(TARGET lua PROPERTY IMPORTED_LOCATION ${CMAKE_CURRENT_BINARY_DIR}/install/lib/liblua.a)
 add_dependencies(lua project_lua)
 
-find_package(Qt5 COMPONENTS Widgets REQUIRED)
+# find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
 
 
@@ -33,38 +32,42 @@ find_package(Qt5 COMPONENTS Widgets REQUIRED)
 # message(WARNING "includes:" ${GLIB_INCLUDE_DIRS})
 
 
-find_package(GTK2 2.10 REQUIRED gtk)
+
+find_package(GTK2 2.24 REQUIRED gtkmm)
 message(WARNING "includes:" ${GTK2_INCLUDE_DIRS})
 message(WARNING "libs:" ${GTK2_LIBRARIES})
 
 
-pkg_check_modules(LIBNOTIFY QUIET libnotify)
-find_path(LIBNOTIFY_INCLUDE_DIRS
-    NAMES notify.h
-    HINTS ${LIBNOTIFY_INCLUDEDIR}
-          ${LIBNOTIFY_INCLUDE_DIRS}
-    PATH_SUFFIXES libnotify
-)
-find_library(LIBNOTIFY_LIBRARIES
-    NAMES notify
-    HINTS ${LIBNOTIFY_LIBDIR}
-          ${LIBNOTIFY_LIBRARY_DIRS}
-)
-include(FindPackageHandleStandardArgs)
-FIND_PACKAGE_HANDLE_STANDARD_ARGS(LibNotify
-  REQUIRED_VARS LIBNOTIFY_INCLUDE_DIRS LIBNOTIFY_LIBRARIES
-  VERSION_VAR LIBNOTIFY_VERSION)
-mark_as_advanced(
-    LIBNOTIFY_INCLUDE_DIRS
-    LIBNOTIFY_LIBRARIES
-)
+# find_package(PkgConfig REQUIRED)
+# pkg_check_modules(LIBNOTIFY QUIET libnotify)
+# find_path(LIBNOTIFY_INCLUDE_DIRS
+#     NAMES notify.h
+#     HINTS ${LIBNOTIFY_INCLUDEDIR}
+#           ${LIBNOTIFY_INCLUDE_DIRS}
+#     PATH_SUFFIXES libnotify
+# )
+# find_library(LIBNOTIFY_LIBRARIES
+#     NAMES notify
+#     HINTS ${LIBNOTIFY_LIBDIR}
+#           ${LIBNOTIFY_LIBRARY_DIRS}
+# )
+# include(FindPackageHandleStandardArgs)
+# FIND_PACKAGE_HANDLE_STANDARD_ARGS(LibNotify
+#   REQUIRED_VARS LIBNOTIFY_INCLUDE_DIRS LIBNOTIFY_LIBRARIES
+#   VERSION_VAR LIBNOTIFY_VERSION)
+# mark_as_advanced(
+#     LIBNOTIFY_INCLUDE_DIRS
+#     LIBNOTIFY_LIBRARIES
+# )
 # set(CMAKE_AUTOMOC ON)
 # set(CMAKE_AUTORCC ON)
 # set(CMAKE_AUTOUIC ON)
 
 
-add_executable(lea main.cpp)
+add_executable(lea
+  main.cpp
+  lua_host.cpp)
 add_dependencies(lea lua)
 # target_link_libraries(foo PUBLIC ${GLIB_LIBRARIES})
 target_include_directories(lea PUBLIC ${GTK2_INCLUDE_DIRS})
-target_link_libraries(lea lua ${GTK2_LIBRARIES} ${LIBNOTIFY_LIBRARIES} Qt5::Widgets)
+target_link_libraries(lea lua ${GTK2_LIBRARIES} ${LIBNOTIFY_LIBRARIES})

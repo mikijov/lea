@@ -1,98 +1,25 @@
-#include <iostream>
+#include "lua_host.hpp"
 
-#include <lua.hpp>
-
-static bool quit = false;
-
-static int lea_log(lua_State *L) {
-   if (lua_gettop(L) != 1) {
-      lua_pushliteral(L, "incorrect number of arguments");
-      lua_error(L);
+int main(int argc, char **argv)
+{
+   try {
+      LuaHost host;
+      host.load_script("../main.lua");
+      host.onConfigure();
+      host.onInit();
    }
-   if (!lua_isstring(L, 1)) {
-      lua_pushliteral(L, "argument must be a string");
-      lua_error(L);
-   }
-   printf("%s\n", lua_tostring(L, 1));
-   return 0;
-}
-
-static int lea_quit(lua_State *L) {
-   if (lua_gettop(L) != 0) {
-      lua_pushliteral(L, "incorrect number of arguments");
-      lua_error(L);
-   }
-   quit = true;
-   return 0;
-}
-
-int main(int argc, char ** argv) {
-   lua_State *L = luaL_newstate();
-   luaL_openlibs(L);
-
-   lua_newtable(L);
-   lua_pushcfunction(L, lea_log); lua_setfield(L, -2, "log");
-   lua_pushcfunction(L, lea_quit); lua_setfield(L, -2, "quit");
-   lua_setglobal(L, "lea");
-
-   if (luaL_loadfile(L, "../main.lua") != LUA_OK) {
-      printf("failed to load file\n");
+   catch (const std::exception& e) {
+      printf("EXCEPTION: %s\n", e.what());
       return 1;
    }
-   if (lua_pcall(L, 0, 0, 0) != LUA_OK) {
-      printf("ERROR running file: %s\n", lua_tostring(L, -1));
-      lua_pop(L, 1);
-   }
-
-   printf("%d\n", lua_gettop(L));
-   if (lua_getglobal(L, "lea") == LUA_TTABLE) {
-      if (lua_getfield(L, -1, "onConfigure") == LUA_TFUNCTION) {
-         if (lua_pcall(L, 0, 0, 0) != LUA_OK) {
-            printf("ERROR lea.onConfigure: %s\n", lua_tostring(L, -1));
-            lua_pop(L, 1);
-         }
-      } else {
-         printf("no lea.onConfigure\n");
-      }
-   } else {
-      printf("lea is not a table\n");
-   }
-   lua_pop(L, 1);
-
-   printf("%d\n", lua_gettop(L));
-   if (lua_getglobal(L, "lea") == LUA_TTABLE) {
-      if (lua_getfield(L, -1, "onInit") == LUA_TFUNCTION) {
-         if (lua_pcall(L, 0, 0, 0) != LUA_OK) {
-            printf("ERROR lea.onInit: %s\n", lua_tostring(L, -1));
-            lua_pop(L, 1);
-         }
-      } else {
-         printf("no lea.onInit\n");
-      }
-   } else {
-      printf("lea is not a table\n");
-   }
-   lua_pop(L, 1);
-
-   printf("%d\n", lua_gettop(L));
-   if (lua_getglobal(L, "lea") == LUA_TTABLE) {
-      if (lua_getfield(L, -1, "onQuit") == LUA_TFUNCTION) {
-         if (lua_pcall(L, 0, 0, 0) != LUA_OK) {
-            printf("ERROR lea.onQuit: %s\n", lua_tostring(L, -1));
-            lua_pop(L, 1);
-         }
-      } else {
-         printf("no lea.onQuit\n");
-      }
-   } else {
-      printf("lea is not a table\n");
-   }
-   lua_pop(L, 1);
-
-   printf("%d\n", lua_gettop(L));
-   lua_close(L);
    return 0;
 }
+
+// #include <iostream>
+
+
+// static bool quit = false;
+
 
 // #include <libnotify/notify.h>
 //
