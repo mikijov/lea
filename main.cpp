@@ -36,6 +36,7 @@
 //    return 0;
 // }
 
+#include <libnotify/notify.h>
 
 #include <QApplication>
 #include <QLabel>
@@ -43,6 +44,18 @@
 #include <QPushButton>
 #include <QSystemTrayIcon>
 #include <QMessageBox>
+
+
+int show_notification() {
+	NotifyNotification *notification = notify_notification_new(
+          "Hello world",
+          "This is an example notification.",
+          "dialog-information"
+          );
+	notify_notification_show(notification, NULL);
+	g_object_unref(G_OBJECT(notification));
+	return 0;
+}
 
 class LeaObject: public QObject {
    public:
@@ -64,6 +77,7 @@ class LeaObject: public QObject {
                break;
             case QSystemTrayIcon::DoubleClick:
                _trayIcon->showMessage("Reason", "DoubleClick");
+               show_notification();
                break;
             case QSystemTrayIcon::MiddleClick:
                _trayIcon->showMessage("Reason", "MiddleClick");
@@ -90,6 +104,7 @@ class LeaObject: public QObject {
 int main(int argc, char **argv)
 {
    QApplication app(argc, argv);
+   notify_init("lea");
 
    LeaObject lea;
 
@@ -111,5 +126,7 @@ int main(int argc, char **argv)
    // trayIconMenu->addSeparator();
    // trayIconMenu->addAction(quitAction);
 
-   return app.exec();
+   int exitCode = app.exec();
+   notify_uninit();
+   return exitCode;
 }
