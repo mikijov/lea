@@ -33,9 +33,9 @@ add_dependencies(lua project_lua)
 
 
 
-find_package(GTK2 2.24 REQUIRED gtkmm)
-message(WARNING "includes:" ${GTK2_INCLUDE_DIRS})
-message(WARNING "libs:" ${GTK2_LIBRARIES})
+find_package(GTK2 2.24 REQUIRED gtk gtkmm)
+# message(WARNING "includes:" ${GTK2_INCLUDE_DIRS})
+# message(WARNING "libs:" ${GTK2_LIBRARIES})
 
 
 # find_package(PkgConfig REQUIRED)
@@ -66,7 +66,14 @@ message(WARNING "libs:" ${GTK2_LIBRARIES})
 
 add_executable(lea
   main.cpp
-  lua_host.cpp)
+  lua_host.cpp
+  lea.cpp
+  lea_tray.cpp
+  lea_icon.cpp
+  lea_timer.cpp
+  lea_menu.cpp
+  lea_notification.cpp
+  )
 add_dependencies(lea lua)
 # target_link_libraries(foo PUBLIC ${GLIB_LIBRARIES})
 target_include_directories(lea PUBLIC ${GTK2_INCLUDE_DIRS})

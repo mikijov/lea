@@ -17,10 +17,12 @@ lea.onQuit()
 lea.quit()
 lea.log(msg)
 
-lea.icon.load(filename)
+lea.tray.create(icon)
+lea.tray.delete(t)
+lea.tray.setClickHandler(t, callback, userdata)
+lea.tray.setScrollHandler(t, callback, userdata)
 
-lea.tray.show(icon)
-lea.tray.addAction(t, action, callback, userdata)
+lea.icon.load(filename)
 
 lea.timer.start(timeoutSeconds, shouldRepeat)
 lea.timer.stop(t)

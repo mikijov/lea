@@ -1,59 +1,79 @@
 #include "lua_host.hpp"
+#include "checks.hpp"
+
+#include "lea.hpp"
+#include "lea_icon.hpp"
+#include "lea_tray.hpp"
+#include "lea_timer.hpp"
+#include "lea_menu.hpp"
+#include "lea_notification.hpp"
 
 #include <lua.hpp>
-
-class CheckForMemoryLeaks {
-   public:
-      CheckForMemoryLeaks(lua_State* L) :
-         _L(L)
-      {
-         top = lua_gettop(_L);
-      }
-
-      ~CheckForMemoryLeaks() {
-         int newTop = lua_gettop(_L);
-         if (newTop != top) {
-            printf("stack changed %d->%d (%d)\n", top, newTop, newTop - top);
-         }
-      }
-   private:
-      lua_State *_L;
-      int top;
-   private:
-      CheckForMemoryLeaks(const CheckForMemoryLeaks&);
-      const CheckForMemoryLeaks& operator=(const CheckForMemoryLeaks&);
-};
-
-static int lea_log(lua_State *L) {
-   if (lua_gettop(L) != 1) {
-      lua_pushliteral(L, "incorrect number of arguments");
-      lua_error(L);
-   }
-   if (!lua_isstring(L, 1)) {
-      lua_pushliteral(L, "argument must be a string");
-      lua_error(L);
-   }
-   printf("%s\n", lua_tostring(L, 1));
-   return 0;
-}
-
-static int lea_quit(lua_State *L) {
-   if (lua_gettop(L) != 0) {
-      lua_pushliteral(L, "incorrect number of arguments");
-      lua_error(L);
-   }
-   // quit = true;
-   return 0;
-}
 
 LuaHost::LuaHost() {
    L = luaL_newstate();
    luaL_openlibs(L);
 
-   lua_newtable(L);
-   lua_pushcfunction(L, lea_log); lua_setfield(L, -2, "log");
-   lua_pushcfunction(L, lea_quit); lua_setfield(L, -2, "quit");
-   lua_setglobal(L, "lea");
+   {
+      CheckForMemoryLeaks check(L);
+
+      lua_newtable(L);
+      lua_pushcfunction(L, lea_log); lua_setfield(L, -2, "log");
+      lua_pushcfunction(L, lea_quit); lua_setfield(L, -2, "quit");
+
+      {
+         CheckForMemoryLeaks check(L);
+
+         lua_newtable(L);
+         lua_pushcfunction(L, lea_tray_create); lua_setfield(L, -2, "create");
+         lua_pushcfunction(L, lea_tray_delete); lua_setfield(L, -2, "delete");
+         lua_pushcfunction(L, lea_tray_setClickHandler); lua_setfield(L, -2, "setClickHandler");
+         lua_pushcfunction(L, lea_tray_setScrollHandler); lua_setfield(L, -2, "setScrollHandler");
+         lua_setfield(L, -2, "tray");
+      }
+
+      {
+         CheckForMemoryLeaks check(L);
+
+         lua_newtable(L);
+         lua_pushcfunction(L, lea_icon_load); lua_setfield(L, -2, "load");
+         lua_setfield(L, -2, "icon");
+      }
+
+      {
+         CheckForMemoryLeaks check(L);
+
+         lua_newtable(L);
+         lua_pushcfunction(L, lea_timer_create); lua_setfield(L, -2, "create");
+         lua_pushcfunction(L, lea_timer_delete); lua_setfield(L, -2, "delete");
+         lua_pushcfunction(L, lea_timer_resetTimeout); lua_setfield(L, -2, "resetTimeout");
+         lua_setfield(L, -2, "timer");
+      }
+
+      {
+         CheckForMemoryLeaks check(L);
+
+         lua_newtable(L);
+         lua_pushcfunction(L, lea_menu_create); lua_setfield(L, -2, "create");
+         lua_pushcfunction(L, lea_menu_addSubMenu); lua_setfield(L, -2, "addSubMenu");
+         lua_pushcfunction(L, lea_menu_addItem); lua_setfield(L, -2, "addItem");
+         lua_pushcfunction(L, lea_menu_addSeparator); lua_setfield(L, -2, "addSeparator");
+         lua_setfield(L, -2, "menu");
+      }
+
+      {
+         CheckForMemoryLeaks check(L);
+
+         lua_newtable(L);
+         lua_pushcfunction(L, lea_notification_show); lua_setfield(L, -2, "show");
+         lua_pushcfunction(L, lea_notification_setClickHandler); lua_setfield(L, -2, "setClickHandler");
+         lua_pushcfunction(L, lea_notification_setTimeout); lua_setfield(L, -2, "setTimeout");
+         lua_setfield(L, -2, "notification");
+      }
+
+      lua_setglobal(L, "lea");
+   }
+
 }
 
 LuaHost::~LuaHost() {
