@@ -24,8 +24,8 @@ lea.tray.setScrollHandler(t, callback, userdata)
 
 lea.icon.load(filename)
 
-lea.timer.start(timeoutSeconds, shouldRepeat)
-lea.timer.stop(t)
+lea.timer.create(timeoutSeconds, shouldRepeat)
+lea.timer.destroy(t)
 lea.timer.resetTimeout(t, seconds)
 
 lea.menu.create()
@@ -33,7 +33,7 @@ lea.menu.addSubMenu(m)
 lea.menu.addItem(m, label, callback, userdata)
 lea.menu.addSeparator(m)
 
-lea.notification.show(title, message, icon)
+lea.notification.create(title, message, icon)
 lea.notification.addAction(nf, action, label, callback, userdata)
 lea.notification.setTimeout(nf, seconds)
 

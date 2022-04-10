@@ -26,3 +26,5 @@ class CheckForMemoryLeaks {
       const CheckForMemoryLeaks& operator=(const CheckForMemoryLeaks&);
 };
 
+
+#define LOG_FUNCTION printf("%s\n", __FUNCTION__);

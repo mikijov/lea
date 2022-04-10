@@ -10,6 +10,8 @@
 
 #include <lua.hpp>
 
+#include <assert.h>
+
 LuaHost::LuaHost() {
    L = luaL_newstate();
    luaL_openlibs(L);
@@ -26,7 +28,7 @@ LuaHost::LuaHost() {
 
          lua_newtable(L);
          lua_pushcfunction(L, lea_tray_create); lua_setfield(L, -2, "create");
-         lua_pushcfunction(L, lea_tray_delete); lua_setfield(L, -2, "delete");
+         lua_pushcfunction(L, lea_tray_destroy); lua_setfield(L, -2, "destroy");
          lua_pushcfunction(L, lea_tray_setClickHandler); lua_setfield(L, -2, "setClickHandler");
          lua_pushcfunction(L, lea_tray_setScrollHandler); lua_setfield(L, -2, "setScrollHandler");
          lua_setfield(L, -2, "tray");
@@ -45,7 +47,7 @@ LuaHost::LuaHost() {
 
          lua_newtable(L);
          lua_pushcfunction(L, lea_timer_create); lua_setfield(L, -2, "create");
-         lua_pushcfunction(L, lea_timer_delete); lua_setfield(L, -2, "delete");
+         lua_pushcfunction(L, lea_timer_destroy); lua_setfield(L, -2, "destroy");
          lua_pushcfunction(L, lea_timer_resetTimeout); lua_setfield(L, -2, "resetTimeout");
          lua_setfield(L, -2, "timer");
       }
@@ -65,7 +67,7 @@ LuaHost::LuaHost() {
          CheckForMemoryLeaks check(L);
 
          lua_newtable(L);
-         lua_pushcfunction(L, lea_notification_show); lua_setfield(L, -2, "show");
+         lua_pushcfunction(L, lea_notification_create); lua_setfield(L, -2, "show");
          lua_pushcfunction(L, lea_notification_setClickHandler); lua_setfield(L, -2, "setClickHandler");
          lua_pushcfunction(L, lea_notification_setTimeout); lua_setfield(L, -2, "setTimeout");
          lua_setfield(L, -2, "notification");
@@ -150,4 +152,32 @@ void LuaHost::onQuit() {
       throw LuaHostException(lua_tostring(L, -1));
    }
    lua_pop(L, 1);
+}
+
+//          oo                   dP            dP
+//                               88            88
+// .d8888b. dP 88d888b. .d8888b. 88 .d8888b. d8888P .d8888b. 88d888b.
+// Y8ooooo. 88 88'  `88 88'  `88 88 88ooood8   88   88'  `88 88'  `88
+//       88 88 88    88 88.  .88 88 88.  ...   88   88.  .88 88    88
+// `88888P' dP dP    dP `8888P88 dP `88888P'   dP   `88888P' dP    dP
+//                           .88
+//                       d8888P
+
+LuaHost *LuaSingleton::_singleton = NULL;
+
+void LuaSingleton::create() {
+   assert(LuaSingleton::_singleton == NULL);
+
+   LuaSingleton::_singleton = new LuaHost();
+}
+
+void LuaSingleton::destroy() {
+   assert(LuaSingleton::_singleton != NULL);
+
+   delete LuaSingleton::_singleton;
+   LuaSingleton::_singleton = NULL;
+}
+
+LuaHost& LuaSingleton::get() {
+   return *LuaSingleton::_singleton;
 }

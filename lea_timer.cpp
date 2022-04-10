@@ -14,7 +14,7 @@ int lea_timer_create(lua_State *L) {
    return 0;
 }
 
-int lea_timer_delete(lua_State *L) {
+int lea_timer_destroy(lua_State *L) {
    if (lua_gettop(L) != 1) {
       lua_pushliteral(L, "incorrect number of arguments");
       lua_error(L);

@@ -23,15 +23,6 @@ add_library(lua STATIC IMPORTED)
 set_property(TARGET lua PROPERTY IMPORTED_LOCATION ${CMAKE_CURRENT_BINARY_DIR}/install/lib/liblua.a)
 add_dependencies(lua project_lua)
 
-# find_package(Qt5 COMPONENTS Widgets REQUIRED)
-
-
-
-# pkg_check_modules(GLIB REQUIRED glib-2.0)
-# message(WARNING "libs:" ${GLIB_LIBRARIES})
-# message(WARNING "includes:" ${GLIB_INCLUDE_DIRS})
-
-
 
 find_package(GTK2 2.24 REQUIRED gtk gtkmm)
 # message(WARNING "includes:" ${GTK2_INCLUDE_DIRS})
@@ -78,3 +69,4 @@ add_dependencies(lea lua)
 # target_link_libraries(foo PUBLIC ${GLIB_LIBRARIES})
 target_include_directories(lea PUBLIC ${GTK2_INCLUDE_DIRS})
 target_link_libraries(lea lua ${GTK2_LIBRARIES} ${LIBNOTIFY_LIBRARIES})
+target_compile_options(lea PRIVATE "-Wno-deprecated-declarations")

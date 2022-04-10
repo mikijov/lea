@@ -8,18 +8,21 @@
 int main(int argc, char **argv) {
     Gtk::Main kit(argc, argv);
 
+    LuaSingleton::create();
+
     try {
-       LuaHost host;
-       host.load_script("../main.lua");
-       host.onConfigure();
-       host.onInit();
+       LuaSingleton::get().load_script("../main.lua");
+       LuaSingleton::get().onConfigure();
+       LuaSingleton::get().onInit();
+
+       Gtk::Main::run();
+
+       LuaSingleton::destroy();
     }
     catch (const std::exception& e) {
        printf("EXCEPTION: %s\n", e.what());
        return 1;
     }
-
-    Gtk::Main::run();
 
     return 0;
 }
