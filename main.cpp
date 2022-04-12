@@ -1,28 +1,65 @@
-#include "lua_host.hpp"
+// #include "lua_host.hpp"
 
-#include <gtkmm.h>
+#include "lea.hpp"
+
+#include <lua.hpp>
 
 #include <iostream>
-#include <vector>
 
+#include <LuaBridge.h>
+
+// #include <gtkmm.h>
+
+// #include <iostream>
+// #include <vector>
+
+// void llog(const std::string& msg) {
+//    std::cout << msg << std::endl;
+// }
+//
 int main(int argc, char **argv) {
-    Gtk::Main kit(argc, argv);
+   // Gtk::Main kit(argc, argv);
 
-    LuaSingleton::create();
+   lua_State *L = luaL_newstate();
+   printf("1\n");
 
-    try {
-       LuaSingleton::get().load_script("../main.lua");
-       LuaSingleton::get().onConfigure();
-       LuaSingleton::get().onInit();
+   luaL_openlibs(L);
+   printf("2\n");
 
-       Gtk::Main::run();
+   luabridge::enableExceptions(L);
+   printf("3\n");
 
-       LuaSingleton::destroy();
-    }
-    catch (const std::exception& e) {
-       printf("EXCEPTION: %s\n", e.what());
-       return 1;
-    }
+   {
+      // luabridge::LuaRef onConfig(L);
+      // luabridge::LuaRef onInit(L);
+      // luabridge::LuaRef onQuit(L);
 
-    return 0;
+      Lea::registerClass(L);
+      // luabridge::getGlobalNamespace(L)
+      //    .beginNamespace("lea")
+      //       .addFunction("log", &Lea::log)
+      //       // .addFunction("llog", &llog)
+      //       // .addFunction("quit", &Lea::quit)
+      //       // .addProperty("onConfig", &onConfig)
+      //       // .addProperty("onInit", &onInit)
+      //       // .addProperty("onQuit", &onQuit)
+      //    .endNamespace();
+      printf("4\n");
+
+      luaL_dostring(L, ""
+            "lea.log(\"hello world\")" "\n"
+            "lea.quit()" "\n"
+            "lea.log(tunguzija)" "\n"
+            "");
+      // luaL_dofile(L, "../test.lua");
+      printf("5\n");
+
+      // Gtk::Main::run();
+      printf("6\n");
+   }
+
+   lua_close(L);
+   printf("7\n");
+
+   return 0;
 }

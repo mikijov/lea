@@ -17,24 +17,27 @@ lea.onQuit()
 lea.quit()
 lea.log(msg)
 
-lea.tray.create(icon)
-lea.tray.delete(t)
-lea.tray.setClickHandler(t, callback, userdata)
-lea.tray.setScrollHandler(t, callback, userdata)
+lea.loadIcon(filename)
+lea.createTrayIcon(icon)
+lea.createTimer(timeoutSeconds, shouldRepeat)
+lea.createMenu()
+lea.createNotification(title, message, icon)
 
-lea.icon.load(filename)
+tray.onMousePress
+tray.onMouseRelease
+tray.onMouseScroll
+tray:show()
+tray:hide()
 
-lea.timer.create(timeoutSeconds, shouldRepeat)
-lea.timer.destroy(t)
-lea.timer.resetTimeout(t, seconds)
+timer.onTick
+timer:stop()
+timer:resetTimeout(timeoutSeconds, shouldRepeat)
 
-lea.menu.create()
-lea.menu.addSubMenu(m)
-lea.menu.addItem(m, label, callback, userdata)
-lea.menu.addSeparator(m)
+menu:addItem(label, callback, userdata)
+menu:addSeparator()
+menu:addSubMenu(label)
 
-lea.notification.create(title, message, icon)
-lea.notification.addAction(nf, action, label, callback, userdata)
-lea.notification.setTimeout(nf, seconds)
+notification.onClick
+notification.setTimeout(nf, seconds)
 
 ```

@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.10)
 project(lea VERSION 1.0.0 LANGUAGES CXX)
 
 set(CMAKE_C_STANDARD 11)
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include(ExternalProject)
@@ -23,10 +23,26 @@ add_library(lua STATIC IMPORTED)
 set_property(TARGET lua PROPERTY IMPORTED_LOCATION ${CMAKE_CURRENT_BINARY_DIR}/install/lib/liblua.a)
 add_dependencies(lua project_lua)
 
+ExternalProject_Add(
+  project_LuaBridge3
+  GIT_REPOSITORY "https://github.com/kunitoki/LuaBridge3"
+  CONFIGURE_COMMAND ""
+  BUILD_COMMAND ""
+  BUILD_ALWAYS true
+  BUILD_IN_SOURCE true
+  INSTALL_COMMAND ""
+)
+ExternalProject_Get_property(project_LuaBridge3 SOURCE_DIR)
+# list(JOIN SOURCE_DIR "," MSG)
+# message(WARNING "includes:" ${MSG})
+include_directories(${SOURCE_DIR}/Distribution/LuaBridge)
 
 find_package(GTK2 2.24 REQUIRED gtk gtkmm)
-# message(WARNING "includes:" ${GTK2_INCLUDE_DIRS})
-# message(WARNING "libs:" ${GTK2_LIBRARIES})
+
+# list(JOIN GTK2_INCLUDE_DIRS "," MSG)
+# message(WARNING "includes:" ${MSG})
+# list(JOIN GTK2_LIBRARIES "," MSG)
+# message(WARNING "libs:" ${MSG})
 
 
 # find_package(PkgConfig REQUIRED)
@@ -55,15 +71,19 @@ find_package(GTK2 2.24 REQUIRED gtk gtkmm)
 # set(CMAKE_AUTOUIC ON)
 
 
+# add_executable(lea
+#   test1.cpp
+#   )
+
 add_executable(lea
   main.cpp
-  lua_host.cpp
+  # lua_host.cpp
   lea.cpp
-  lea_tray.cpp
-  lea_icon.cpp
-  lea_timer.cpp
-  lea_menu.cpp
-  lea_notification.cpp
+  # lea_tray.cpp
+  # lea_icon.cpp
+  # lea_timer.cpp
+  # lea_menu.cpp
+  # lea_notification.cpp
   )
 add_dependencies(lea lua)
 # target_link_libraries(foo PUBLIC ${GLIB_LIBRARIES})
