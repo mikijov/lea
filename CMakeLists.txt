@@ -71,19 +71,15 @@ find_package(GTK2 2.24 REQUIRED gtk gtkmm)
 # set(CMAKE_AUTOUIC ON)
 
 
-# add_executable(lea
-#   test1.cpp
-#   )
-
 add_executable(lea
   main.cpp
-  # lua_host.cpp
   lea.cpp
   # lea_tray.cpp
   # lea_icon.cpp
   # lea_timer.cpp
   # lea_menu.cpp
   # lea_notification.cpp
+  # lua_host.cpp
   )
 add_dependencies(lea lua)
 # target_link_libraries(foo PUBLIC ${GLIB_LIBRARIES})

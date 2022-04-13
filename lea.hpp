@@ -12,15 +12,14 @@ class Lea : public std::enable_shared_from_this<Lea> {
       static void log(const std::string& msg);
       static void quit();
 
-   private:
       struct VarStorage {
          VarStorage(lua_State *L) :
-            onConfig(L),
+            onConfigure(L),
             onInit(L),
             onQuit(L)
          {}
 
-         luabridge::LuaRef onConfig;
+         luabridge::LuaRef onConfigure;
          luabridge::LuaRef onInit;
          luabridge::LuaRef onQuit;
       };

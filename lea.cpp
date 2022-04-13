@@ -19,7 +19,7 @@ void Lea::registerClass(lua_State *L) {
       .beginNamespace("lea")
          .addFunction("log", &Lea::log)
          .addFunction("quit", &Lea::quit)
-         .addProperty("onConfig", &Lea::vars->onConfig)
+         .addProperty("onConfigure", &Lea::vars->onConfigure)
          .addProperty("onInit", &Lea::vars->onInit)
          .addProperty("onQuit", &Lea::vars->onQuit)
       .endNamespace();
