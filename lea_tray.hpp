@@ -1,9 +1,34 @@
 #pragma once
 
-struct lua_State;
+#include <lua.hpp>
+#include <LuaBridge.h>
 
-int lea_tray_create(lua_State *L);
-int lea_tray_destroy(lua_State *L);
-int lea_tray_setMousePressHandler(lua_State *L);
-int lea_tray_setMouseReleaseHandler(lua_State *L);
-int lea_tray_setScrollHandler(lua_State *L);
+#include <gtkmm.h>
+
+#include <memory>
+
+class LeaSystemTray : public std::enable_shared_from_this<LeaSystemTray> {
+   public:
+      explicit LeaSystemTray(lua_State *L);
+      virtual ~LeaSystemTray();
+
+      static void registerClass(lua_State *L);
+
+   private:
+      static std::shared_ptr<LeaSystemTray> create(lua_State *L);
+
+      luabridge::LuaRef _onMousePress;
+      luabridge::LuaRef _onMouseRelease;
+      luabridge::LuaRef _onMouseScroll;
+      luabridge::LuaRef _userData;
+
+      bool mousePressHandler(GdkEventButton* e);
+      bool mouseReleaseHandler(GdkEventButton* e);
+      bool mouseScrollHandler(GdkEventScroll* e);
+
+      Glib::RefPtr<Gtk::StatusIcon> _statusIcon;
+
+   private:
+      LeaSystemTray(const LeaSystemTray& other);
+      const LeaSystemTray& operator=(const LeaSystemTray& other);
+};

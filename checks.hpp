@@ -1,8 +1,10 @@
 #pragma once
 
 #include <lua.hpp>
+#include <LuaBridge.h>
 
 #include <stdio.h>
+#include <stdexcept>
 
 class CheckForMemoryLeaks {
    public:
@@ -28,3 +30,19 @@ class CheckForMemoryLeaks {
 
 
 #define LOG_FUNCTION printf("%s\n", __FUNCTION__);
+
+template<class... Args>
+void callr(const luabridge::LuaRef& fn, Args&&... args) {
+   if ( fn.isCallable(std::forward<Args>(args)...) ) {
+      try {
+         fn();
+      } catch (const luabridge::LuaException& e) {
+         std::cerr << "Lua EXCEPTION: " << e.what() << std::endl;
+      } catch (const std::exception& e) {
+         std::cerr << "EXCEPTION: " << e.what() << std::endl;
+      }
+   } else {
+      std::cerr << fn << " is not callable.";
+   }
+}
+

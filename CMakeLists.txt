@@ -74,7 +74,7 @@ find_package(GTK2 2.24 REQUIRED gtk gtkmm)
 add_executable(lea
   main.cpp
   lea.cpp
-  # lea_tray.cpp
+  lea_tray.cpp
   # lea_icon.cpp
   # lea_timer.cpp
   # lea_menu.cpp

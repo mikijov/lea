@@ -1,6 +1,8 @@
 #include "lea.hpp"
+#include "checks.hpp"
 
 #include <LuaBridge.h>
+#include <gtkmm.h>
 
 std::unique_ptr<Lea::VarStorage> Lea::vars;
 
@@ -9,7 +11,7 @@ void Lea::log(const std::string& msg) {
 }
 
 void Lea::quit() {
-   log("quit");
+   Gtk::Main::quit();
 }
 
 void Lea::registerClass(lua_State *L) {

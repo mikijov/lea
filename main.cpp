@@ -1,4 +1,6 @@
 #include "lea.hpp"
+#include "lea_tray.hpp"
+#include "checks.hpp"
 
 #include <lua.hpp>
 #include <LuaBridge.h>
@@ -10,35 +12,25 @@ int main(int argc, char **argv) {
    Gtk::Main kit(argc, argv);
 
    lua_State *L = luaL_newstate();
-
+   luabridge::enableExceptions(L);
    luaL_openlibs(L);
 
-   luabridge::enableExceptions(L);
-
    Lea::registerClass(L);
+   LeaSystemTray::registerClass(L);
 
-   // luaL_dostring(L, ""
-   //       "lea.log(\"hello world\")" "\n"
-   //       "lea.quit()" "\n"
-   //       "lea.log(tunguzija)" "\n"
-   //       "");
-   luaL_dofile(L, "../main.lua");
-
-   if (Lea::vars->onConfigure.isCallable()) {
-      Lea::vars->onConfigure();
+   if (luaL_dofile(L, "../main.lua") != LUA_OK) {
+      std::cerr << "Failed to run main.lua." << std::endl;
+      return 1;
    }
 
-   if (Lea::vars->onInit.isCallable()) {
-      Lea::vars->onInit();
-   }
-
-   if (Lea::vars->onQuit.isCallable()) {
-      Lea::vars->onQuit();
-   }
-
-   Lea::vars.release();
+   callr(Lea::vars->onConfigure);
+   callr(Lea::vars->onInit);
 
    Gtk::Main::run();
+
+   callr(Lea::vars->onQuit);
+
+   Lea::vars.release();
 
    lua_close(L);
 
