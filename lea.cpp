@@ -11,7 +11,7 @@ void Lea::log(const std::string& msg) {
 }
 
 void Lea::quit() {
-   Gtk::Main::quit();
+   Gtk::Application::get_default()->quit();
 }
 
 void Lea::registerClass(lua_State *L) {

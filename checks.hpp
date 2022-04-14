@@ -33,9 +33,9 @@ class CheckForMemoryLeaks {
 
 template<class... Args>
 void callr(const luabridge::LuaRef& fn, Args&&... args) {
-   if ( fn.isCallable(std::forward<Args>(args)...) ) {
+   if ( fn.isCallable() ) {
       try {
-         fn();
+         fn(std::forward<Args>(args)...);
       } catch (const luabridge::LuaException& e) {
          std::cerr << "Lua EXCEPTION: " << e.what() << std::endl;
       } catch (const std::exception& e) {

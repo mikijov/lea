@@ -1,41 +1,76 @@
 #include "lea_notification.hpp"
+#include "lea_icon.hpp"
+#include "checks.hpp"
 
-#include <lua.hpp>
+#include <LuaBridge.h>
 
-int lea_notification_create(lua_State *L) {
-   if (lua_gettop(L) != 1) {
-      lua_pushliteral(L, "incorrect number of arguments");
-      lua_error(L);
-   }
-   if (!lua_isstring(L, 1)) {
-      lua_pushliteral(L, "argument must be a string");
-      lua_error(L);
-   }
-   return 0;
+#include <gtkmm.h>
+
+LeaNotification::LeaNotification(
+      const std::string& title,
+      const std::string& body,
+      lua_State *L) :
+   _title(title),
+   _body(body),
+   _icon(L),
+   _onClick(L),
+   _userdata(L)
+{
 }
 
-int lea_notification_setClickHandler(lua_State *L) {
-   if (lua_gettop(L) != 1) {
-      lua_pushliteral(L, "incorrect number of arguments");
-      lua_error(L);
-   }
-   if (!lua_isstring(L, 1)) {
-      lua_pushliteral(L, "argument must be a string");
-      lua_error(L);
-   }
-   return 0;
+LeaNotification::~LeaNotification() {
+   LOG_FUNCTION;
 }
 
-int lea_notification_setTimeout(lua_State *L) {
-   if (lua_gettop(L) != 1) {
-      lua_pushliteral(L, "incorrect number of arguments");
-      lua_error(L);
-   }
-   if (!lua_isstring(L, 1)) {
-      lua_pushliteral(L, "argument must be a string");
-      lua_error(L);
-   }
-   return 0;
+void LeaNotification::registerClass(lua_State *L) {
+   luabridge::getGlobalNamespace(L)
+      .beginNamespace("lea")
+         .beginClass<LeaNotification>("Notification")
+            .addStaticFunction("create", &LeaNotification::create)
+            .addFunction("show", &LeaNotification::show)
+            .addProperty("icon", &LeaNotification::_icon)
+            .addProperty("onClick", &LeaNotification::_onClick)
+            .addProperty("userdata", &LeaNotification::_userdata)
+         .endClass()
+      .endNamespace();
 }
 
+std::shared_ptr<LeaNotification> LeaNotification::create(
+      const std::string& title,
+      const std::string& body,
+      lua_State *L)
+{
+   return std::make_shared<LeaNotification>(title, body, L);
+}
 
+Glib::RefPtr<Gio::SimpleAction> act;
+
+void LeaNotification::show() {
+   static int id = 0;
+
+   auto notification = Gio::Notification::create(_title);
+   notification->set_body(_body);
+   if (_icon.isValid()) {
+      const std::shared_ptr<LeaIcon> icon = _icon;
+      printf("icon: %p\n", icon.get());
+      notification->set_icon(icon->_icon);
+   }
+   if (_onClick.isCallable()) {
+      char sname[256];
+      sprintf(sname, "notification-%d", ++id);
+      char nname[256];
+      sprintf(nname, "app.%s", sname);
+
+      act = Gtk::Application::get_default()->add_action(sname);
+      act->signal_activate().connect(
+         sigc::mem_fun(*this,&LeaNotification::clickHandler));
+
+      notification->add_button("Activate", nname);
+   }
+   Gtk::Application::get_default()->send_notification(notification);
+}
+
+void LeaNotification::clickHandler(const Glib::VariantBase& /*v*/) {
+   // printf("clickHandler\n");
+   callr(_onClick, this);
+}

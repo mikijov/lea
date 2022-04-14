@@ -37,7 +37,9 @@ menu:addItem(label, callback, userdata)
 menu:addSeparator()
 menu:addSubMenu(label)
 
+notification.title
+notification.message
+notification.icon
 notification.onClick
-notification.setTimeout(nf, seconds)
 
 ```

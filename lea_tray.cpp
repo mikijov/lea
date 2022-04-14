@@ -7,7 +7,7 @@ LeaSystemTray::LeaSystemTray(const std::shared_ptr<LeaIcon>& icon, lua_State *L)
    _onMousePress(L),
    _onMouseRelease(L),
    _onMouseScroll(L),
-   _userData(L)
+   _userdata(L)
 {
    _statusIcon = Gtk::StatusIcon::create(icon->_icon);
 
@@ -31,7 +31,7 @@ void LeaSystemTray::registerClass(lua_State *L) {
             .addProperty("onMousePress", &LeaSystemTray::_onMousePress)
             .addProperty("onMouseRelease", &LeaSystemTray::_onMouseRelease)
             .addProperty("onMouseScroll", &LeaSystemTray::_onMouseScroll)
-            .addProperty("userData", &LeaSystemTray::_onMouseScroll)
+            .addProperty("userdata", &LeaSystemTray::_userdata)
          .endClass()
       .endNamespace();
 }
@@ -45,16 +45,16 @@ std::shared_ptr<LeaSystemTray> LeaSystemTray::create(
 }
 
 bool LeaSystemTray::mousePressHandler(GdkEventButton* e) {
-   callr(_onMousePress);
+   callr(_onMousePress, this, e->button, e->x_root, e->y_root);
    return true;
 }
 
 bool LeaSystemTray::mouseReleaseHandler(GdkEventButton* e) {
-   callr(_onMouseRelease);
+   callr(_onMouseRelease, this, e->button, e->x_root, e->y_root);
    return true;
 }
 
 bool LeaSystemTray::mouseScrollHandler(GdkEventScroll* e) {
-   callr(_onMouseScroll);
+   callr(_onMouseScroll, this, e->delta_x, e->delta_y);
    return true;
 }

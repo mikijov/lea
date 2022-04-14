@@ -37,13 +37,13 @@ ExternalProject_Get_property(project_LuaBridge3 SOURCE_DIR)
 # message(WARNING "includes:" ${MSG})
 include_directories(${SOURCE_DIR}/Distribution/LuaBridge)
 
-find_package(GTK2 2.24 REQUIRED gtk gtkmm)
+# find_package(GTK2 2.24 REQUIRED gtk gtkmm)
 
-# list(JOIN GTK2_INCLUDE_DIRS "," MSG)
-# message(WARNING "includes:" ${MSG})
-# list(JOIN GTK2_LIBRARIES "," MSG)
-# message(WARNING "libs:" ${MSG})
-
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(GTKMM REQUIRED gtkmm-3.0)
+# include_directories(${GTK_INCLUDE_DIRS})
+# link_directories(${GTK_LIBRARY_DIRS})
+# add_definitions(${GTK_CFLAGS_OTHER})
 
 # find_package(PkgConfig REQUIRED)
 # pkg_check_modules(LIBNOTIFY QUIET libnotify)
@@ -71,18 +71,23 @@ find_package(GTK2 2.24 REQUIRED gtk gtkmm)
 # set(CMAKE_AUTOUIC ON)
 
 
+list(JOIN GTKMM_INCLUDE_DIRS "," MSG)
+message(WARNING "includes:" ${MSG})
+list(JOIN GTKMM_LIBRARIES "," MSG)
+message(WARNING "libs:" ${MSG})
+
 add_executable(lea
   main.cpp
   lea.cpp
   lea_tray.cpp
   lea_icon.cpp
+  lea_notification.cpp
   # lea_timer.cpp
   # lea_menu.cpp
-  # lea_notification.cpp
   # lua_host.cpp
   )
 add_dependencies(lea lua)
 # target_link_libraries(foo PUBLIC ${GLIB_LIBRARIES})
-target_include_directories(lea PUBLIC ${GTK2_INCLUDE_DIRS})
-target_link_libraries(lea lua ${GTK2_LIBRARIES} ${LIBNOTIFY_LIBRARIES})
+target_include_directories(lea PUBLIC ${GTKMM_INCLUDE_DIRS})
+target_link_libraries(lea lua ${GTKMM_LIBRARIES})
 target_compile_options(lea PRIVATE "-Wno-deprecated-declarations")

@@ -1,6 +1,7 @@
 #include "lea.hpp"
 #include "lea_icon.hpp"
 #include "lea_tray.hpp"
+#include "lea_notification.hpp"
 #include "checks.hpp"
 
 #include <lua.hpp>
@@ -10,7 +11,8 @@
 #include <iostream>
 
 int main(int argc, char **argv) {
-   Gtk::Main kit(argc, argv);
+   auto app = Gtk::Application::create(argc, argv, "xyz.haker.lea");
+   app->hold();
 
    lua_State *L = luaL_newstate();
    luabridge::enableExceptions(L);
@@ -19,6 +21,7 @@ int main(int argc, char **argv) {
    Lea::registerClass(L);
    LeaIcon::registerClass(L);
    LeaSystemTray::registerClass(L);
+   LeaNotification::registerClass(L);
 
    if (luaL_dofile(L, "../main.lua") != LUA_OK) {
       std::cerr << "Failed to run main.lua." << std::endl;
@@ -28,7 +31,7 @@ int main(int argc, char **argv) {
    callr(Lea::vars->onConfigure);
    callr(Lea::vars->onInit);
 
-   Gtk::Main::run();
+   app->run();
 
    callr(Lea::vars->onQuit);
 

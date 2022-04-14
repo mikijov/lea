@@ -25,7 +25,7 @@ class LeaSystemTray : public std::enable_shared_from_this<LeaSystemTray> {
       luabridge::LuaRef _onMousePress;
       luabridge::LuaRef _onMouseRelease;
       luabridge::LuaRef _onMouseScroll;
-      luabridge::LuaRef _userData;
+      luabridge::LuaRef _userdata;
 
       bool mousePressHandler(GdkEventButton* e);
       bool mouseReleaseHandler(GdkEventButton* e);
