@@ -3,20 +3,13 @@
 
 #include <LuaBridge.h>
 
-LeaSystemTray::LeaSystemTray(lua_State *L) :
+LeaSystemTray::LeaSystemTray(const std::shared_ptr<LeaIcon>& icon, lua_State *L) :
    _onMousePress(L),
    _onMouseRelease(L),
    _onMouseScroll(L),
    _userData(L)
 {
-   // auto icon = Glib::RefPtr<Gdk::Pixbuf>::cast_dynamic(
-   //       LuaSingleton::get().getObject(lua_touserdata(L, 1)));
-   // if (!icon) {
-   //    lua_pushliteral(L, "argument must be an icon");
-   //    lua_error(L);
-   // }
-
-   _statusIcon = Gtk::StatusIcon::create(Gtk::Stock::SELECT_COLOR);
+   _statusIcon = Gtk::StatusIcon::create(icon->_icon);
 
    _statusIcon->signal_button_press_event().connect(
          sigc::mem_fun(*this,&LeaSystemTray::mousePressHandler));
@@ -35,7 +28,6 @@ void LeaSystemTray::registerClass(lua_State *L) {
       .beginNamespace("lea")
          .beginClass<LeaSystemTray>("SystemTray")
             .addStaticFunction("create", &LeaSystemTray::create)
-            // .addFunction("test", &LeaSystemTray::test)
             .addProperty("onMousePress", &LeaSystemTray::_onMousePress)
             .addProperty("onMouseRelease", &LeaSystemTray::_onMouseRelease)
             .addProperty("onMouseScroll", &LeaSystemTray::_onMouseScroll)
@@ -44,8 +36,12 @@ void LeaSystemTray::registerClass(lua_State *L) {
       .endNamespace();
 }
 
-std::shared_ptr<LeaSystemTray> LeaSystemTray::create(lua_State *L) {
-   return std::make_shared<LeaSystemTray>(L);
+std::shared_ptr<LeaSystemTray> LeaSystemTray::create(
+      const std::shared_ptr<LeaIcon>& icon,
+      lua_State *L
+      )
+{
+   return std::make_shared<LeaSystemTray>(icon, L);
 }
 
 bool LeaSystemTray::mousePressHandler(GdkEventButton* e) {

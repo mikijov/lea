@@ -23,13 +23,8 @@ end
 function lea.onInit()
    lea.log("onInit")
 
-   -- icon = lea.icon.load("cactus.svg")
-   -- tray = lea.tray.create(icon)
-   -- lea.tray.setMousePressHandler(tray, myCallback, "user data")
-   --
-   -- lea.log("done")
-
-   local tray = lea.SystemTray.create()
+   local icon = lea.Icon.load("../cactus.svg")
+   local tray = lea.SystemTray.create(icon)
    tray.onMousePress = onMousePress
    tray.onMouseRelease = onMouseRelease
    tray.onMouseScroll = onMouseScroll

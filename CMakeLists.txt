@@ -75,7 +75,7 @@ add_executable(lea
   main.cpp
   lea.cpp
   lea_tray.cpp
-  # lea_icon.cpp
+  lea_icon.cpp
   # lea_timer.cpp
   # lea_menu.cpp
   # lea_notification.cpp

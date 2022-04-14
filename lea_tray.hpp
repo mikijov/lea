@@ -1,5 +1,7 @@
 #pragma once
 
+#include "lea_icon.hpp"
+
 #include <lua.hpp>
 #include <LuaBridge.h>
 
@@ -9,13 +11,16 @@
 
 class LeaSystemTray : public std::enable_shared_from_this<LeaSystemTray> {
    public:
-      explicit LeaSystemTray(lua_State *L);
+      LeaSystemTray(const std::shared_ptr<LeaIcon>& icon, lua_State *L);
       virtual ~LeaSystemTray();
 
       static void registerClass(lua_State *L);
 
    private:
-      static std::shared_ptr<LeaSystemTray> create(lua_State *L);
+      static std::shared_ptr<LeaSystemTray> create(
+            const std::shared_ptr<LeaIcon>& icon,
+            lua_State *L
+            );
 
       luabridge::LuaRef _onMousePress;
       luabridge::LuaRef _onMouseRelease;

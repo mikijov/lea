@@ -1,29 +1,28 @@
 #include "lea_icon.hpp"
-#include "lua_host.hpp"
 #include "checks.hpp"
 
 #include <gtkmm.h>
 
 #include <lua.hpp>
 
-int lea_icon_load(lua_State *L) {
-   LOG_FUNCTION;
-
-   if (lua_gettop(L) != 1) {
-      lua_pushliteral(L, "incorrect number of arguments");
-      lua_error(L);
-   }
-   if (!lua_isstring(L, 1)) {
-      lua_pushliteral(L, "argument must be a string");
-      lua_error(L);
-   }
-
-   auto icon = Gdk::Pixbuf::create_from_file(lua_tostring(L, 1));
-   LuaSingleton::get().registerObject(icon);
-
-   lua_pushlightuserdata(L, icon.get());
-
-   return 1;
+LeaIcon::LeaIcon() {
 }
 
+LeaIcon::~LeaIcon() {
+   LOG_FUNCTION;
+}
 
+void LeaIcon::registerClass(lua_State *L) {
+   luabridge::getGlobalNamespace(L)
+      .beginNamespace("lea")
+         .beginClass<LeaIcon>("Icon")
+            .addStaticFunction("load", &LeaIcon::load)
+         .endClass()
+      .endNamespace();
+}
+
+std::shared_ptr<LeaIcon> LeaIcon::load(const char* filename, lua_State *L) {
+   auto icon = std::make_shared<LeaIcon>();
+   icon->_icon = Gdk::Pixbuf::create_from_file(filename);
+   return icon;
+}

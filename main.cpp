@@ -1,4 +1,5 @@
 #include "lea.hpp"
+#include "lea_icon.hpp"
 #include "lea_tray.hpp"
 #include "checks.hpp"
 
@@ -16,6 +17,7 @@ int main(int argc, char **argv) {
    luaL_openlibs(L);
 
    Lea::registerClass(L);
+   LeaIcon::registerClass(L);
    LeaSystemTray::registerClass(L);
 
    if (luaL_dofile(L, "../main.lua") != LUA_OK) {
