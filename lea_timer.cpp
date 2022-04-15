@@ -1,40 +1,75 @@
 #include "lea_timer.hpp"
+#include "checks.hpp"
 
-#include <lua.hpp>
+#include <LuaBridge.h>
 
-int lea_timer_create(lua_State *L) {
-   if (lua_gettop(L) != 1) {
-      lua_pushliteral(L, "incorrect number of arguments");
-      lua_error(L);
-   }
-   if (!lua_isstring(L, 1)) {
-      lua_pushliteral(L, "argument must be a string");
-      lua_error(L);
-   }
-   return 0;
+#include <cmath>
+
+LeaTimer::LeaTimer(
+      float timeout,
+      bool shouldRepeat,
+      lua_State *L) :
+   _onTimeout(L),
+   _userdata(L),
+   _shouldRepeat(shouldRepeat)
+{
+   _timerConnection = Glib::signal_timeout().connect(
+         sigc::mem_fun(*this,&LeaTimer::timeoutHandler),
+         lround(timeout * 1000));
 }
 
-int lea_timer_destroy(lua_State *L) {
-   if (lua_gettop(L) != 1) {
-      lua_pushliteral(L, "incorrect number of arguments");
-      lua_error(L);
-   }
-   if (!lua_isstring(L, 1)) {
-      lua_pushliteral(L, "argument must be a string");
-      lua_error(L);
-   }
-   return 0;
+LeaTimer::~LeaTimer() {
+   LOG_FUNCTION;
+
+   _timerConnection.disconnect();
 }
 
-int lea_timer_resetTimeout(lua_State *L) {
-   if (lua_gettop(L) != 1) {
-      lua_pushliteral(L, "incorrect number of arguments");
-      lua_error(L);
-   }
-   if (!lua_isstring(L, 1)) {
-      lua_pushliteral(L, "argument must be a string");
-      lua_error(L);
-   }
-   return 0;
+void LeaTimer::registerClass(lua_State *L) {
+   luabridge::getGlobalNamespace(L)
+      .beginNamespace("lea")
+         .beginClass<LeaTimer>("Timer")
+            .addStaticFunction("create", &LeaTimer::create)
+            .addFunction("reset", &LeaTimer::reset)
+            .addFunction("stop", &LeaTimer::stop)
+            .addProperty("onTimeout", &LeaTimer::_onTimeout)
+            .addProperty("userdata", &LeaTimer::_userdata)
+         .endClass()
+      .endNamespace();
 }
 
+std::shared_ptr<LeaTimer> LeaTimer::create(
+      float timeout,
+      bool shouldRepeat,
+      lua_State *L
+      )
+{
+   return std::make_shared<LeaTimer>(timeout, shouldRepeat, L);
+}
+
+void LeaTimer::reset(
+      float timeout,
+      bool shouldRepeat,
+      lua_State *L
+      )
+{
+   _timerConnection.disconnect();
+   _shouldRepeat = shouldRepeat;
+   _timerConnection = Glib::signal_timeout().connect(
+         sigc::mem_fun(*this,&LeaTimer::timeoutHandler),
+         lround(timeout * 1000));
+}
+
+void LeaTimer::stop(
+      lua_State *L
+      )
+{
+   _timerConnection.disconnect();
+}
+
+bool LeaTimer::timeoutHandler() {
+   callr(_onTimeout, this);
+   if (!_shouldRepeat) {
+      _timerConnection.disconnect();
+   }
+   return _shouldRepeat;
+}

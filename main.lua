@@ -1,5 +1,7 @@
 tray = nil
 icon = nil
+timer = nil
+timeout = 0.5
 
 function onNotificationClick(notification)
    lea.log("onNotificationClick")
@@ -32,6 +34,25 @@ function lea.onConfigure()
    lea.log("onConfigure")
 end
 
+function onTimeout1(self)
+   lea.log("timer1")
+
+   timer = lea.Timer.create(1, true)
+   timer.onTimeout = onTimeout2
+end
+
+function onTimeout2(self)
+   timeout = timeout * 2
+   if timeout > 50 then
+      lea.log("Stopping timer.")
+      self:stop()
+      timer = nil
+   else
+      lea.log("Will wait " .. timeout .. " seconds.")
+      self:reset(timeout, true)
+   end
+end
+
 function lea.onInit()
    lea.log("onInit")
 
@@ -40,6 +61,9 @@ function lea.onInit()
    tray.onMousePress = onMousePress
    tray.onMouseRelease = onMouseRelease
    tray.onMouseScroll = onMouseScroll
+
+   timer = lea.Timer.create(1, false)
+   timer.onTimeout = onTimeout1
 end
 
 function lea.onQuit()

@@ -42,7 +42,7 @@ void callr(const luabridge::LuaRef& fn, Args&&... args) {
          std::cerr << "EXCEPTION: " << e.what() << std::endl;
       }
    } else {
-      std::cerr << fn << " is not callable.";
+      std::cerr << fn << " is not callable." << std::endl;
    }
 }
 

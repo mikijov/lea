@@ -82,9 +82,8 @@ add_executable(lea
   lea_tray.cpp
   lea_icon.cpp
   lea_notification.cpp
-  # lea_timer.cpp
+  lea_timer.cpp
   # lea_menu.cpp
-  # lua_host.cpp
   )
 add_dependencies(lea lua)
 # target_link_libraries(foo PUBLIC ${GLIB_LIBRARIES})

@@ -2,6 +2,7 @@
 #include "lea_icon.hpp"
 #include "lea_tray.hpp"
 #include "lea_notification.hpp"
+#include "lea_timer.hpp"
 #include "checks.hpp"
 
 #include <lua.hpp>
@@ -22,6 +23,7 @@ int main(int argc, char **argv) {
    LeaIcon::registerClass(L);
    LeaSystemTray::registerClass(L);
    LeaNotification::registerClass(L);
+   LeaTimer::registerClass(L);
 
    if (luaL_dofile(L, "../main.lua") != LUA_OK) {
       std::cerr << "Failed to run main.lua." << std::endl;
