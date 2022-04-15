@@ -28,6 +28,7 @@ void LeaSystemTray::registerClass(lua_State *L) {
       .beginNamespace("lea")
          .beginClass<LeaSystemTray>("SystemTray")
             .addStaticFunction("create", &LeaSystemTray::create)
+            .addFunction("showMenu", &LeaSystemTray::showMenu)
             .addProperty("onMousePress", &LeaSystemTray::_onMousePress)
             .addProperty("onMouseRelease", &LeaSystemTray::_onMouseRelease)
             .addProperty("onMouseScroll", &LeaSystemTray::_onMouseScroll)
@@ -42,6 +43,17 @@ std::shared_ptr<LeaSystemTray> LeaSystemTray::create(
       )
 {
    return std::make_shared<LeaSystemTray>(icon, L);
+}
+
+void LeaSystemTray::showMenu(
+      const std::shared_ptr<LeaMenu>& menu,
+      int button,
+      lua_State *L
+      )
+{
+   LOG_FUNCTION;
+
+   _statusIcon->popup_menu_at_position(*menu->_menu, button, gtk_get_current_event_time());
 }
 
 bool LeaSystemTray::mousePressHandler(GdkEventButton* e) {

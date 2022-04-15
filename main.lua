@@ -7,6 +7,38 @@ function onNotificationClick(notification)
    lea.log("onNotificationClick")
 end
 
+function onItem1()
+   lea.log("item1 clicked")
+end
+
+function onItem2()
+   lea.log("item2 clicked")
+end
+
+function onItem3()
+   lea.log("item3 clicked")
+end
+
+function onItem4()
+   lea.log("item4 clicked")
+end
+
+function onSubmenu1()
+   lea.log("submenu1 clicked")
+end
+
+function onSubmenu2()
+   lea.log("submenu2 clicked")
+end
+
+function onSubmenu3()
+   lea.log("submenu3 clicked")
+end
+
+function onSubmenu4()
+   lea.log("submenu4 clicked")
+end
+
 function onMousePress(tray, button, x, y)
    lea.log("onMousePress called " .. button .. ", " .. x .. "x" .. y)
 
@@ -16,14 +48,43 @@ function onMousePress(tray, button, x, y)
       notification.onClick = onNotificationClick
       notification:show()
    end
+   if button == 3 then
+      menu = lea.Menu.create()
+      menu:addItem("item 1", onItem1)
+      menu:addItem("item 2", onItem2)
+      menu:addSeparator()
+      menu:addItem("item 3", onItem3)
+      menu:addItem("item 4", onItem4)
+      submenu = menu:addSubmenu("submenu")
+      submenu:addItem("subitem1", onSubmenu1)
+      submenu:addItem("subitem2", onSubmenu2)
+      submenu:addItem("subitem3", onSubmenu3)
+      submenu:addItem("subitem4", onSubmenu4)
+
+      tray:showMenu(menu, button)
+   -- else
+      -- lea.log("onMouseRelease called " .. button .. ", " .. x .. "x" .. y)
+   end
 end
 
 function onMouseRelease(tray, button, x, y)
-   if button == 3 then
-      lea.quit()
-   else
+   -- if button == 3 then
+   --    menu = lea.Menu.create()
+   --    menu:addItem("item 1", nil)
+   --    menu:addItem("item 2", nil)
+   --    menu:addSeparator()
+   --    menu:addItem("item 3", nil)
+   --    menu:addItem("item 4", nil)
+   --    submenu = menu:addSubmenu("item 1")
+   --    submenu:addItem("subitem1", nil)
+   --    submenu:addItem("subitem2", nil)
+   --    submenu:addItem("subitem3", nil)
+   --    submenu:addItem("subitem4", nil)
+   --
+   --    tray:showMenu(menu, button)
+   -- else
       lea.log("onMouseRelease called " .. button .. ", " .. x .. "x" .. y)
-   end
+   -- end
 end
 
 function onMouseScroll(tray, dx, dy)
