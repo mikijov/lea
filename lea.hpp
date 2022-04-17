@@ -1,5 +1,7 @@
 #pragma once
 
+#define LEA_VERSION "0.1.0"
+
 #include <lua.hpp>
 #include <LuaBridge.h>
 
@@ -14,11 +16,13 @@ class Lea : public std::enable_shared_from_this<Lea> {
 
       struct VarStorage {
          VarStorage(lua_State *L) :
+            VERSION(L, LEA_VERSION),
             onConfigure(L),
             onInit(L),
             onQuit(L)
          {}
 
+         luabridge::LuaRef VERSION;
          luabridge::LuaRef onConfigure;
          luabridge::LuaRef onInit;
          luabridge::LuaRef onQuit;

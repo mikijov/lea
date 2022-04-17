@@ -1,5 +1,5 @@
 #include "lea.hpp"
-#include "checks.hpp"
+#include "lea_util.hpp"
 
 #include <LuaBridge.h>
 #include <gtkmm.h>
@@ -21,6 +21,7 @@ void Lea::registerClass(lua_State *L) {
       .beginNamespace("lea")
          .addFunction("log", &Lea::log)
          .addFunction("quit", &Lea::quit)
+         .addProperty("VERSION", &Lea::vars->VERSION, false)
          .addProperty("onConfigure", &Lea::vars->onConfigure)
          .addProperty("onInit", &Lea::vars->onInit)
          .addProperty("onQuit", &Lea::vars->onQuit)

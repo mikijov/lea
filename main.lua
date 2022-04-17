@@ -91,8 +91,10 @@ function onMouseScroll(tray, dx, dy)
    lea.log("onMouseScroll called " .. dx .. "x" .. dy)
 end
 
-function lea.onConfigure()
+function lea.onConfigure(config)
    lea.log("onConfigure")
+   lea.log("Lea version: " .. lea.VERSION)
+   config.appName = "xyz.haker.lea.example"
 end
 
 function onTimeout1(self)

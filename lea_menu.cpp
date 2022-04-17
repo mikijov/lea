@@ -1,5 +1,5 @@
 #include "lea_menu.hpp"
-#include "checks.hpp"
+#include "lea_util.hpp"
 
 #include <lua.hpp>
 
@@ -77,6 +77,6 @@ std::shared_ptr<LeaMenu> LeaMenu::addSubmenu(
 }
 
 void LeaMenu::clickHandler(const luabridge::LuaRef& onClick) {
-   callr(onClick, this);
+   call_callback(onClick, this);
 }
 

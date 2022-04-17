@@ -71,14 +71,15 @@ pkg_check_modules(GTKMM REQUIRED gtkmm-3.0)
 # set(CMAKE_AUTOUIC ON)
 
 
-list(JOIN GTKMM_INCLUDE_DIRS "," MSG)
-message(WARNING "includes:" ${MSG})
-list(JOIN GTKMM_LIBRARIES "," MSG)
-message(WARNING "libs:" ${MSG})
+# list(JOIN GTKMM_INCLUDE_DIRS "," MSG)
+# message(WARNING "includes:" ${MSG})
+# list(JOIN GTKMM_LIBRARIES "," MSG)
+# message(WARNING "libs:" ${MSG})
 
 add_executable(lea
   main.cpp
   lea.cpp
+  lea_config.cpp
   lea_tray.cpp
   lea_icon.cpp
   lea_notification.cpp

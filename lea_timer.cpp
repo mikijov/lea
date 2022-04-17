@@ -1,5 +1,5 @@
 #include "lea_timer.hpp"
-#include "checks.hpp"
+#include "lea_util.hpp"
 
 #include <LuaBridge.h>
 
@@ -67,7 +67,7 @@ void LeaTimer::stop(
 }
 
 bool LeaTimer::timeoutHandler() {
-   callr(_onTimeout, this);
+   call_callback(_onTimeout, this);
    if (!_shouldRepeat) {
       _timerConnection.disconnect();
    }

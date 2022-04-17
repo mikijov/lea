@@ -1,5 +1,5 @@
 #include "lea_tray.hpp"
-#include "checks.hpp"
+#include "lea_util.hpp"
 
 #include <LuaBridge.h>
 
@@ -57,16 +57,16 @@ void LeaSystemTray::showMenu(
 }
 
 bool LeaSystemTray::mousePressHandler(GdkEventButton* e) {
-   callr(_onMousePress, this, e->button, e->x_root, e->y_root);
+   call_callback(_onMousePress, this, e->button, e->x_root, e->y_root);
    return true;
 }
 
 bool LeaSystemTray::mouseReleaseHandler(GdkEventButton* e) {
-   callr(_onMouseRelease, this, e->button, e->x_root, e->y_root);
+   call_callback(_onMouseRelease, this, e->button, e->x_root, e->y_root);
    return true;
 }
 
 bool LeaSystemTray::mouseScrollHandler(GdkEventScroll* e) {
-   callr(_onMouseScroll, this, e->delta_x, e->delta_y);
+   call_callback(_onMouseScroll, this, e->delta_x, e->delta_y);
    return true;
 }

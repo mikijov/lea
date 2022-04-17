@@ -1,6 +1,6 @@
 #include "lea_notification.hpp"
 #include "lea_icon.hpp"
-#include "checks.hpp"
+#include "lea_util.hpp"
 
 #include <LuaBridge.h>
 
@@ -52,7 +52,6 @@ void LeaNotification::show() {
    notification->set_body(_body);
    if (_icon.isValid()) {
       const std::shared_ptr<LeaIcon> icon = _icon;
-      printf("icon: %p\n", icon.get());
       notification->set_icon(icon->_icon);
    }
    if (_onClick.isCallable()) {
@@ -71,6 +70,5 @@ void LeaNotification::show() {
 }
 
 void LeaNotification::clickHandler(const Glib::VariantBase& /*v*/) {
-   // printf("clickHandler\n");
-   callr(_onClick, this);
+   call_callback(_onClick, this);
 }

@@ -1,5 +1,5 @@
 #include "lea_icon.hpp"
-#include "checks.hpp"
+#include "lea_util.hpp"
 
 #include <gtkmm.h>
 
