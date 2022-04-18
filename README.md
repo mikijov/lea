@@ -12,6 +12,7 @@
 ## Lua Programming
 
 ### Hello, World.
+This script will
 ```lua
 function onInit()
   lea.log("Hello, World.\n")

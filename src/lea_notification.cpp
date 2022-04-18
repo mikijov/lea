@@ -73,7 +73,7 @@ void LeaNotification::show() {
       notification->set_icon(icon->_icon);
    }
    if (_onClick.isCallable()) {
-      char sname[256];
+      char sname[252];
       sprintf(sname, "notification-%d", ++id);
       char nname[256];
       sprintf(nname, "app.%s", sname);
